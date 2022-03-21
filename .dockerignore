@@ -1,0 +1,10 @@
+# testing dockerignore
+.git
+nginx
+certs
+images
+*.yml
+Dockerfile
+*.md
+*.sh
+*.docker

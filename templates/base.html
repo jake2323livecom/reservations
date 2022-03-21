@@ -1,0 +1,101 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'sidebars.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <main style="height: 100%; overflow-y: auto">
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px; height: 100vh; position: sticky; top:0;">
+            <a href="/" class="d-flex align-items-center mt-4 mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <img src="{% static 'images/jcu_logo.png' %}" alt="logo" height="60" />
+                <span class="mt-2 ms-4 fs-4">
+                    <h2>Events</h2>
+                </span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li>
+                    <a href="{% url 'jcu_ball:reservation_list' %}" class="nav-link text-white">
+                        <span class="h3">JCU Ball</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'summer_picnic:reservation_list' %}" class="nav-link text-white">
+                        <span class="h3">Summer Picnic</span>
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            {% if user.is_authenticated %}
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                    id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{% static 'images/profile-user.png' %}" alt="" width="32" height="32"
+                        class="rounded-circle me-3">
+                    <strong>
+                        <h3>{{ user }}</h3>
+                    </strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                    <li><a class="dropdown-item" href="{% url 'accounts:password_change' %}">Change Password...</a></li>
+                    <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Sign out</a></li>
+                </ul>
+            </div>
+            {% else %}
+            <a href="{% url 'accounts:login' %}" class="btn btn-primary"><span class="mb-0 h4">Login</span></a>
+            {% endif %}
+        </div>
+        <div class="container" style="padding: 2em; height: 100%;">
+
+            <h2 class="display-4 text-light mb-0">
+                {% block header %}
+                {% endblock %}
+            </h2>
+            <hr class="mt-0 mb-4 text-light">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+    <script src="{% static 'sidebars.js' %}"></script>
+</body>
+
+</html>

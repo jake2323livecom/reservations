@@ -1,0 +1,30 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+
+class PicnicReservation(models.Model):
+
+    first_name = models.CharField(max_length=50)
+    middle_initial = models.CharField(max_length=1)
+    last_name = models.CharField(max_length=50)
+    full_name = models.CharField(max_length=101, editable=False)
+
+    comments = models.TextField(blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, editable=False)
+
+    csv_fields = (
+        "last_name",
+        "first_name",
+        "middle_initial",
+        "comments",
+    )
+
+    class Meta:
+        ordering = ["full_name"]
+
+    def __str__(self):
+        return self.full_name
+
+    def save(self, *args, **kwargs):
+        self.full_name = f"{self.last_name.upper()}, {self.first_name.upper()} {self.middle_initial.upper()}."
+        super().save(*args, **kwargs)

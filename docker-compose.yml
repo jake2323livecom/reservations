@@ -1,0 +1,58 @@
+version: "3.9"
+
+# Any comments indicate replacements that need to be made in the production docker-compose file
+
+services:
+  db:
+    image: postgres
+    container_name: reservations_postgres
+    environment:
+      - POSTGRES_DB=reservations
+      - POSTGRES_USER=reservations
+      - POSTGRES_PASSWORD=?Js0c2kld
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reservations"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+
+  web:
+    build: .    # image: reservations_web
+    container_name: reservations_web
+    environment:
+      - DATABASE=postgres
+      - SQL_ENGINE=django.db.backends.postgresql
+      - POSTGRES_NAME=reservations
+      - POSTGRES_USER=reservations
+      - POSTGRES_PASSWORD=?Js0c2kld
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             echo yes | python manage.py collectstatic &&
+             gunicorn reservations.wsgi:application --bind 0.0.0.0:8000"
+    expose:
+      - 8000
+    volumes:
+      - .:/home/app/reservations/   # remove this volume mapping completely
+      - ./staticfiles/:/home/app/reservations/staticfiles   # - static_volume:/home/app/reservations/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    build: ./nginx    # image: reservations_nginx
+    container_name: reservations_nginx
+    ports:
+      - 443:443
+    volumes:
+      - ./staticfiles/:/home/app/reservations/staticfiles   # - static_volume:/home/app/reservations/staticfiles
+      - ./certs:/etc/nginx/certs/
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
+
