@@ -24,7 +24,7 @@ class BallReservationListView(generic.ListView):
             return BallReservation.objects.all()
 
     def get_context_data(self, **kwargs):
-        context = super(BallReservationListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['filter'] = self.request.GET.get('filter')
         return context
 
